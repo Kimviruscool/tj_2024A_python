@@ -1,6 +1,6 @@
 # 5_2장되새김문제.py
+
 #Q1 평균 점수 구하기
-from dataclasses import replace
 
 a = 80
 b = 75
