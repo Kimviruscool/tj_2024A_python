@@ -92,4 +92,4 @@ else : #그게 아니면
 score = 80
 messages = "success" if score >60 else "failure" 
 #messages = 기본값 if(만약) 점수가 60 초과이면 아니면 "실패" 출력
-print(messages) #success
+print(messages) # 결과 : success
