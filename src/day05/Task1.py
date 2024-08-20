@@ -9,6 +9,8 @@
 #[조건3] : names외 추가적인 전역 변수 생성 불가능.
 # 제출 : git에 commit 후 카톡방에 해당 과제가 있는 링크 제출
 
+# 하나의 변수에 여러가지 정보 # 1 JSON[몇 가지 필드를 KEY 로 구분] 2. csv[몇 가지 필드를 쉼표(,)로 구분], 주로 문자열 타입 사용
+
 names = "" # 여러개 name들을 저장하는 문자열 변수
 
 def nameCreate() :
@@ -38,7 +40,7 @@ def nameDelete() :
     return
 
 while True : #무한루프
-    ch = input("1.Create 2.Read 3.Update 4.Delete : ")
+    ch = input("1.Create 2.Read 3.Update 4.Delete : ") #타입변환 , " " 문자처리
     if ch == "1" :
         nameCreate()
     elif ch == "2" :
