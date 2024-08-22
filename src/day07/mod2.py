@@ -8,5 +8,5 @@ class Math :
         return PI * (r ** 2)
 
     #함수
-    def add( a, b):
-        return a + b
+def add( a, b) :
+    return a + b
