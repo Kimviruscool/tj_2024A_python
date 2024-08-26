@@ -10,20 +10,21 @@ import json
 
 
 # [Code 4]
-def getSeoulService(start_num,end_num):
+def getSeoulService(start_num,end_num,search):
     jsonResult = []
     isDataEnd = 0
 
-    jsonData = getSeoulItem(start_num,end_num)
+    jsonData = getSeoulItem(start_num,end_num,search)
     if jsonData != None :
         print(jsonData)
         for item in jsonData['ChunmanFreeSuggestions']['row'] :
             SN = item['SN']
             TITLE = item['TITLE']
-            content = item['content']
+            content = item['CONTENT']
+            score = item['VOTE_SCORE']
             REG_DATE = item['REG_DATE']
 
-            dic = {'SN' : SN, 'TITLE' : TITLE, 'content' : content, 'REG_DATE' : REG_DATE }
+            dic = {'SN' : SN, 'TITLE' : TITLE, 'content' : content, 'REG_DATE' : REG_DATE, 'score' : score }
             jsonResult.append(dic)
     else :
         return
@@ -31,12 +32,13 @@ def getSeoulService(start_num,end_num):
 
 Itemkey = "4b5262736d73696e3130326e44616b6a"
 # [Code 3]
-def getSeoulItem(start_num,end_num):
+def getSeoulItem(start_num,end_num,search):
     base = "http://openapi.seoul.go.kr:8088/"
 
     parameter = f'{Itemkey}/json/ChunmanFreeSuggestions'
     parameter += f'/{start_num}'
     parameter += f'/{end_num}'
+    parameter += f'/{search}'
 
     url = base + parameter
     print(f'>>> URL : {url}')
@@ -51,7 +53,7 @@ def getSeoulItem(start_num,end_num):
 def getRequestUrl(url) :
     req = urllib.request.Request(url)
     try :
-        response = urllib.request.Request(req)
+        response = urllib.request.urlopen(req)
         if response.getcode() == 200:
             return response.read().decode('utf-8')
     except Exception as e :
@@ -60,14 +62,15 @@ def getRequestUrl(url) :
 # [Code 1]
 def main() :
 
+    search = input("찾고 싶은 제목 : ")
     start_num = input("첫번째 페이지 번호 : ")
     end_num = input("마지막 페이지 번호 : ")
 
     jsonResult = []
-    jsonResult = getSeoulService(start_num,end_num)
+    jsonResult = getSeoulService(start_num,end_num,search)
     print(jsonResult)
 
-    with open(f"ChunmanFreeSuggestion__{start_num}__{end_num}.json","w",encoding="utf-8") as file :
+    with open(f"{search}__ChunmanFreeSuggestion__{start_num}__{end_num}.json","w",encoding="utf-8") as file :
         jsonFile = json.dumps(jsonResult, indent=4, sort_keys=True, ensure_ascii=False)
         file.write(jsonFile)
 
