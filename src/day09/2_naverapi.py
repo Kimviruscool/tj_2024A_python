@@ -91,11 +91,23 @@ def main() :
     #파일 쓰기 모드 객체 생성
     file = open(f'{srcText}-naver-{node}.json', 'w', encoding='utf-8')
     #월드컵-naver-news.json
+    #json.dumps : JSON 형식의 문자열로 변환 함수
+        #json.dumps(변환할Python객체, indent=들여쓰기수준4, sort_keys=알파벳순으로 정렬true/false, ensure_ascii=아스키사용여부 true/false)
+        #(1) 변환할py객체 : 딕셔너리 또는 리스트 #jsonResult : 검색 결과를 정리하여 저장할 리스트 변수
+        #(2) indent : 생략시 들여쓰기없음 , 주로 4정도가 많이 사용된다. / 가독성이 좋다.
+        #(3) sort_keys : True(key값 기준으로 알파벳순 a-z 정렬) , false(딕셔너리 키 순서대로)
+        #(4) ensure_ascii : False (UTF-8 인코딩으로 비아스키코드문자 - 주로 한글 사용시) True(기본값, 아스키코드 문자)
     jsonFile = json.dumps(jsonResult, indent=4, sort_keys=True, ensure_ascii=False)
+
     #파일 쓰기
     file.write(jsonFile)
     #파일 닫기
     file.close()
+
+    # #with open() as 파일변수명 : #with종료시 자동 으로 파일 닫기
+    # with open(f'{srcText}-naver-{node}.json','w',encoding='utf-8) as file :
+    #     jsonFile = jsondumps(jsonResult,indent=4,sort_keys=True,ensure_ascii=False)
+    #     file.write(jsonFile)
 
 if __name__ == "__main__" :
     main() #[code1] 메소드실행
