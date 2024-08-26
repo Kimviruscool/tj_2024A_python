@@ -1,0 +1,38 @@
+[
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 143152,
+        "yyyymm": "202401"
+    },
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 183999,
+        "yyyymm": "202402"
+    },
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 338742,
+        "yyyymm": "202403"
+    },
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 229252,
+        "yyyymm": "202404"
+    },
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 278423,
+        "yyyymm": "202405"
+    },
+    {
+        "nat_Name": "일본",
+        "nat_cd": 130,
+        "visit_cnt": 258431,
+        "yyyymm": "202406"
+    }
+]
