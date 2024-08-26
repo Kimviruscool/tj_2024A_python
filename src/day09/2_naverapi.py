@@ -87,7 +87,7 @@ def main() :
     print(f'가져온 데이터 {cnt}건')
     # print(jsonResult)
 
-    #JSON으로 파일 처리
+    #Py 객체를 JSON형식의 문자열로 파일 처리
     #파일 쓰기 모드 객체 생성
     file = open(f'{srcText}-naver-{node}.json', 'w', encoding='utf-8')
     #월드컵-naver-news.json
