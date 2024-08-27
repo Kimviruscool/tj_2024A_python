@@ -7,29 +7,48 @@
     #Http(GET) : 포트:5000/qooqoo
     #(3)생성된 csv 파일 읽어서 json 형식을 반환
 import urllib.request
+from crypt import methods
+
 from bs4 import BeautifulSoup
 import pandas as pd
-
-result = []
-
-for page in range(1,7) :
-    url = f"http://www.qooqoo.co.kr/bbs/board.php?bo_table=storeship&&page={page}"
-    response = urllib.request.urlopen(url)
-    htmlData = response.read()
-    soup = BeautifulSoup(htmlData,"html.parser")
-
-    # print(soup.select('.td-mobile'))
-
-    tbody = soup.select_one('tbody')
-    for tr in tbody.select('tr') :
-      td = tr.select('td')
+import flask
+from flask import Flask
 
 
-    #
-    # tbody = soup.select_one("tbody")
-    # tr = tbody.select("tr")
-    # # print(tr[0].text)
-    # for i in tr :
-    #     print(i.text)
+def qooqoo(result) :
+    for page in range(1,7) :
+        url = f"http://www.qooqoo.co.kr/bbs/board.php?bo_table=storeship&&page={page}"
+        response = urllib.request.urlopen(url)
+        htmlData = response.read()
+        soup = BeautifulSoup(htmlData,"html.parser")
+        tbody = soup.select_one('tbody')
+        for row in tbody.select('tr') :
+            tds = row.select('td')
+            if len(tds) < 5: continue
+            num = tds[0].text.strip() #print(num)
+            name = tds[1].select('a')[1].text.strip() #print(name)
+            phone = tds[2].text.strip() #print(phone)
+            address = tds[3].text.strip() #print(address)
+            time = tds[4].text.strip() #print(time)
+            store = [ num , name , phone , address , time]
+            result.append(store)
 
-# print(result)
+def main():
+    result = []
+    print(">>>> 쿠우쿠우 크롤링 >>>>")
+    qooqoo(result)
+    tb1 = pd.DataFrame(result, columns=('num','name','phone','address','time'))
+    tb1.to_csv("qooqoo.csv",mode='w',index=False)
+
+    return result
+
+app = Flask(__name__)
+
+@app.route('/')
+def index() : # 매핑 함수
+    result = main()
+    return result
+
+
+if __name__ == '__main__' :
+    app.run( debug=True )
