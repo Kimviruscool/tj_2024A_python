@@ -97,8 +97,8 @@ def read_csv_to_json(fileName):
         #orient='records' : 각 행마다 하나의 JSON 객체로 구성
         #force_ascii=False : 아스키 문자 대신에 원래의 문자를 사용하겠다.(UTF-8) true:아스키코드사용
     #3. JSON 형식(문자열) 의 py타입(객체타입-리스트/딕셔너리)으로 변환
-    json.loads(jsonResult) #json.loads() : 문자열타입(json타입) > py타입(json형식) 변환
-    return jsonResult
+    reuslt = json.loads(jsonResult) #json.loads() : 문자열타입(json타입) > py타입(json형식) 변환
+    return reuslt
 
 
 #서비스 테스트 확인 구역
