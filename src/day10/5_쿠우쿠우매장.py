@@ -36,7 +36,7 @@ def main():
     print(">>>> 쿠우쿠우 크롤링 >>>>")
     qooqoo(result)
     tb1 = pd.DataFrame(result, columns=('num','name','phone','address','time'))
-    tb1.to_csv("qooqoo.csv",mode='w',index=False)
+    tb1.to_csv("qooqoo.csv",encoding='cp949',mode='w',index=False)
 
     return result
 
