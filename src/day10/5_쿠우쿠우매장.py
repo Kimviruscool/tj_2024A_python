@@ -6,12 +6,10 @@
 #4. Flask(플라스크) 이용한 쿠우쿠우 전국 매장 정보를 반환 하는 HTTP 매핑 정의한다.
     #Http(GET) : 포트:5000/qooqoo
     #(3)생성된 csv 파일 읽어서 json 형식을 반환
-import urllib.request
-from crypt import methods
 
+import urllib.request
 from bs4 import BeautifulSoup
 import pandas as pd
-import flask
 from flask import Flask
 
 
