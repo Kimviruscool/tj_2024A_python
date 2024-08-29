@@ -24,6 +24,7 @@
 지역 class = "list" > div > ul > li[3]
 채용기간 class = "list" > div > ul > li[4]
 '''
+from itertools import count
 
 # 1. 모듈 가져오기
 from bs4 import BeautifulSoup
@@ -106,11 +107,15 @@ def totalJobInfo(result2):
 
 
 def newhistory(result2):
-    new = result2['기타']
+    new = result2.count("신입")
+    return new
 
 # if __name__ == "__main__":
 #     result = []
 #     getJobInfo(result)
 #     list2d_to_csv(result, 'jobInfo', ['회사명', '공고명', '기타'])  # 매장정보를 csv로 저장 서비스 호출
+#     # newhistory(result)
 #     result2 = read_csv_to_json('jobInfo')
+#     result3 = newhistory('jobInfo')
 #     # print(result2)
+#     print(result3.select_one('기타'))

@@ -17,3 +17,9 @@ def totalJob():
     # print(result)
     return result
 
+@app.route("/newhistory" , methods=['get']) # http://localhost:5000/qooqoo
+def newhist():
+    result2 = read_csv_to_json('jobInfo')
+    result = newhistory(result2)
+    # print(result)
+    return result
