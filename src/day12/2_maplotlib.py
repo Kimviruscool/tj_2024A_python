@@ -36,7 +36,7 @@ y1 = [350,410,520,695]
 y2 = [200,250,385,350]
 x = range(len(y1)) #0부터 y1 길이만큼 리스트 생성 [0,1,2,3]
 
-#2. x축과 y축 데이터를 지정하여 바 차트 생성
+#2. x축과 y축 데이터를 지정하여 바 차트 생성 #width = 굵기 # color = 색상
 plt.bar(x, y1, width=0.7, color = "blue")
 plt.bar(x, y2, width=0.7, color = "red", bottom=y1)
 
@@ -53,4 +53,16 @@ plt.xticks(x, xLabel, fontsize=10)
 #8.범례 설정 (막대구분 이름 표시)
 plt.legend(['chairs','desks'])
 #9. 바 차트 표시/실행
+plt.show()
+
+#[7] . 산점도 : x축과 y축의 값 관계를 시각화 # 각 데이터 포인트는 두 변수의 값을 x축 y축에 대응시켜 점으로 표현
+#1. 데이터 준비
+import random
+x = [random.random() for _ in range(50)] #50 개의 x축 요소를 난수로 생성한다.
+print(x)
+y = [random.random() for _ in range(50)] #50 개의 y축 요소를 난수로 생성한다.
+print(y)
+#2. 산점도 차트 생성
+plt.scatter(x , y)
+#3. 산점도 차트 출력/실행
 plt.show()
