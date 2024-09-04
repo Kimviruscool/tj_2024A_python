@@ -88,3 +88,10 @@ print(titanic_corr)
 #상관 계수를 csv에 저장
 titanic_corr.to_csv('타이타닉상관계수표.csv', index=True)
 
+#특정한 변수 사이의 상관 계수를 추출
+print(titanic['survived'].corr(titanic['adult_male'])) #-0.5570800422053259
+                #종속변수                   #독립변수
+
+#생존률 과 객실 요금 상관 계수를 추출
+print(titanic['survived'].corr(titanic['fare'])) #0.2573065223849622
+                #종속변수               #독립변수
