@@ -150,8 +150,40 @@ import matplotlib.pyplot as plt
 import seaborn as sns #install seaborn
 
 sns.set_style('dark') #히스토그램 차트 배경색 설정
-sns.distplot(레드와인등급집단, kde = True , color = 'red', label = 'redwine') #kde =
+#2. distplot 객체 생성
+sns.distplot(레드와인등급집단, kde = True , color = 'red', label = 'redwine') 
 sns.distplot(화이트와인등급집단, kde = True, label='white wine')
+# kde : 커널 밀도 추정
+# 밀도 : 어떤 값 또는 구간에 데이터가 얼마나 집중되어 있는지 나타내는 값
+
 plt.title("Quality of Wine Type") #차트 제목
 plt.legend() #차트 범례 표시
 plt.show() # 차트 보기
+
+import statsmodels.api as sm
+#1. 부분 회귀에 사용할 등급(종속) 과 고정산(독립) 제외한 모든 열 이름을 리스트로 구성한다.
+others = list(set(wine.columns).difference(set(["quality","fixed_acidity"])))
+    #1. list() : 리스트 타입 변환 함수
+    #2. set() : 집합 타입 반환 함수 [중복이 없는 컬렉션]
+p , resids = sm.graphics.plot_partregress("quality", "fixed_acidity", others, data = wine, ret_coords=True)
+'''
+quality : 종속변수
+fixed_acidit : 독립변수
+others : 다중회귀 분석에서 분석할 부분 독립변수를 제외한 나머지 독립 변수 리스트 , 고정산 과 등급의 관계에서 다른 변수들이 미치는 영향을 제거
+data = win : 분석에 사용되는 데이터 프레임
+'''
+plt.show()
+
+#다중회귀 분석 결과를 부분 회귀 플롯으로 그리드형식으로 차트
+fig = plt.figure(figsize = (8,13)) #fig 차트 크기 설정
+sm.graphics.plot_partregress_grid(선형회귀모델결과, fig = fig) #선형회귀모델 결과를 각 부분별 회귀 플롯을 그리드 형식으로 구성
+plt.show()
+'''
+각 플롯(차트)에서 독립변수(각 와인속성) 와 종속변수(등급)간의 선형 관계의 강도를 차트로 표시
+기울기,잔차의 패턴 , 점들의 분포 등을 관찰하여 독립변수가 종속변수에 미치는 영향 확인
+잔차란 ? 회귀분석에서 실제 데이터 와  회귀 모델 예측한 값과 차이
+예 ] : 아파트 가격을 예측하는 모델을 만들었는데 , 실제 가격은 10인데 모델이 예측한 가격은 8억 이라고 했을때 잔차는 2억이다.
+    즉 ] : 잔차가 0에 가까우면 모델이 데이터 포인트를 잘 예측했다.
+    잔차는 모델 성능을 평가하고 개선할 부분을 찾는데 중요한 역할
+플롯이 선형적이고 잔차가 무작위 분포 하면 데이터가 잘 설명되고 있는 상태, 점들이 선형에서 크게 벗어나면 모델을 개선 할 필요가 있다.
+'''
