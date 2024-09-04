@@ -69,3 +69,22 @@ plt.show() #남자승객 생존률은 18.9% 여자승객 생존률 74.2%
 sns.countplot(x = 'pclass',hue='survived',data=titanic)
 plt.title('Pclass vs Survived')
 plt.show() #생존자는 1등급 에서 가장 많고 사망자는 3등급이 가장 많다
+#예] 동행 여부 속성(alone) 따라 생존자 수
+sns.countplot(x= 'alone', hue='survived', data=titanic)
+plt.show() #혼자일때 사망률이 더 높았다, 혼자가아닐때 생존률이더 높았다.
+
+#상관 분석 #연속형 데이터만 가능 #회귀분석과 다른점은 예측치 없다.
+    #연속형 데이터만 가능 하므로 연속형 데이터 열만 추출 #.select_dtypes(include=[타입1, 타입2])
+titanic2 = titanic.select_dtypes(include=[int,float,bool])
+#
+titanic_corr = titanic2.corr(method = 'pearson')
+print(titanic_corr)
+#상관계수 : 0~1 정도와 방향을 하나의 수치 요약 # 0 관계가 거의 없다. 1 관계가 강하다. (P.219~220)
+    #양의 상관관계는 한 변수가 증가하면 다른 변수도 증가한다.
+    #음의 상관관계는 한 변수가 증가하면 다른 변수는 감소한다.
+#분석 : 남자성인은 생존여부 와 생존과 음의 상관관계 , 객실등급은 생존여부 와 음의 상관관계 , 혼자탑승한경우 음의 상관 관계를 가진다.
+    #남자가 증가하면 생존여부가 감소한다. 객실등급 이 증가하면 생존 여부가 감소한다.
+
+#상관 계수를 csv에 저장
+titanic_corr.to_csv('타이타닉상관계수표.csv', index=True)
+
