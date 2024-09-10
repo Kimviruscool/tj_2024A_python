@@ -1,4 +1,4 @@
-#day19 > 1_선형회귀분석
+#day19 > 1_분석평가지표
 
 '''
 회귀분석 : 변수들간의 인과 관계 파악/분석
@@ -112,3 +112,8 @@ print(R2) #0.9486081370449679
 R = 1- SSE/SST = 
     1 - (29.1874(분모)/1.5(분자)) = 0.0514(결과) = 0.9486(백분율) 
 '''
+
+#[4] 평가 지표 , MAE
+from sklearn.metrics import mean_absolute_error
+MAE = mean_absolute_error(실제값 , 예측값)
+print(MAE) #0.5
