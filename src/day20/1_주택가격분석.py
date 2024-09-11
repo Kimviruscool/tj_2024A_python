@@ -90,12 +90,14 @@ import seaborn as sns #회귀 분석 관련 차트 구성
 # - 회귀계수 : 독립변수 1증가 할때마다 종속변수의 증감 단위 #기울기
 # - 신뢰구간 : 좁으면 예측이 안정적이고 관계가 명확하다.
 #             넓다면 예측이 불안정하고 관계가 불명확 하다.
-fig, axs = plt.subplots(figsize = (16,16), ncols=3, nrows=5)
+fig, axs = plt.subplots(figsize = (16,16), ncols=3, nrows=5) #3칸 5줄로 구성된 다중차트
 
 x_feature= ['CRIM', 'ZN', 'INDUS','CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
 
-for i, feature in enumerate(x_feature) :
-    row = int(i/3)
-    col = i%3
+for i, feature in enumerate(x_feature) : # for 인덱스 , 요소값 in enumerate(리스트)
+    print(i)
+    print(feature)
+    row = int(i/3) #몫
+    col = i%3 #나머지
     sns.regplot(x = feature, y='PRICE', data=boston_df, ax=axs[row][col])
 plt.show()
