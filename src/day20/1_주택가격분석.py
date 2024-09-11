@@ -83,8 +83,13 @@ print(np.round(model.coef_, 1))
 # -0.6]
 ###################### [3] 결과 시각화 ###############################
 import matplotlib.pyplot as plt
-import seaborn as sns
+import seaborn as sns #회귀 분석 관련 차트 구성
 
+# sns.regplot(x='CRIM', y='PRICE', data=boston_df)
+# - y절편 : 독립변수가 0일때 종속변수의  값
+# - 회귀계수 : 독립변수 1증가 할때마다 종속변수의 증감 단위 #기울기
+# - 신뢰구간 : 좁으면 예측이 안정적이고 관계가 명확하다.
+#             넓다면 예측이 불안정하고 관계가 불명확 하다.
 fig, axs = plt.subplots(figsize = (16,16), ncols=3, nrows=5)
 
 x_feature= ['CRIM', 'ZN', 'INDUS','CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
