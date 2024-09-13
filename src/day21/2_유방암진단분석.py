@@ -40,3 +40,29 @@ Y_predict2 = lr_b_cancer.predict_proba(X_test) #이진 확률 예측
 # print(Y_predict)
 # print(Y_predict2)
 
+from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score
+#오차행렬
+print(confusion_matrix(Y_test, Y_predict))
+'''
+[[ 60   3]
+ [  1 107]]
+'''
+accuracy = accuracy_score(Y_test, Y_predict) #정확도
+precision = precision_score(Y_test, Y_predict) #정밀도
+recall = recall_score(Y_test, Y_predict) #재현율
+f1 = f1_score(Y_test, Y_predict) #F1
+roc_auc = roc_auc_score(Y_test, Y_predict) #roc-auc
+print(f"정확도 : {round(accuracy,3)}, 정밀도 : {round(precision,3)}, 재현율 : {round(recall,3)}, F1 : {round(f1,3)}")
+# 정확도 : 0.977, 정밀도 : 0.973, 재현율 : 0.991, F1 : 0.982
+print(f'ROC_AUC : {round(roc_auc,3)}')
+# ROC_AUC : 0.972
+'''
+1(100%)에 가까울 수록 모델은 예측을 잘 표현(예측) 하고 있다.
+
+정확도 : 모델이 전체 데이터에서 얼마나 잘 예측했는지?
+정밀도 : 모델이 양성으로 예측한 것들 중에서 실제 양성 비율
+재현율 : 실제 양성 중에서 모델이 얼마나 잘 양성으로 예측 했는지?
+F1 스코어 : 정밀도 와 재현율의 균형 
+ROC-AUC 스코어 : 모델이 양성과 음성을 구별하는 능력 평가
+'''
