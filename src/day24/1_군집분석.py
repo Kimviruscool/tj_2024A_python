@@ -93,4 +93,29 @@ plt.scatter( df['weight_scale'],df['sweetness_scale'], c=df['cluster'], marker='
 plt.scatter(scalerNewData[:,0], scalerNewData[:,1], marker='^')
 plt.show() #차트 실행
 
-#개선2 : 최적의 K(클러스터 수 )를 찾기
+#개선2 : 최적의 K(클러스터 수 )를 찾기 #엘보 방법 #.inertia_
+    #그래프 에서 SSE(왜곡)의 변화가 급격히 줄어드는 지점을 찾는다. 그 지점이 최적의 클러스터 수
+sse = [] # 오차들을 저장하는 리스트
+
+for 클러스트수 in range(1, 11) : #1 ~ 10 까지의 클러스터 수를 테스트 # 10회전
+    model = KMeans(n_clusters = 클러스트수 ) # 1
+    model.fit(scalerData)
+    print(model.inertia_) # 총 제곱 오차 (SSE) 를 계산하고 반환한다.
+    sse.append(model.inertia_) #SSE를 리스트에 대입
+# 총 클러스트 1부터 10개 까지의 모델 10개 SSE(오차)를 리스트에 저장
+print(sse)
+
+#오차 시각화
+plt.plot(sse, marker='o') #선차트
+plt.show()
+
+#최적의 K 확인후 재 모델링
+model3 = KMeans(n_clusters = 2)
+model3.fit(scalerData)
+
+
+
+# 3 클러스터 3이 최적의 수(K) 
+클러스터수 = [1,2,3,4,5]
+왜곡 = [400,200,100,80,75] #급격하게 변화가 줄어드는 지점 (클러스터수가 3에서 4로 변화될때)
+        #200 #100 / #20 #5
