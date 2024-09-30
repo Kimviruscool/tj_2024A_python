@@ -88,4 +88,4 @@ for epoch in range(1, EPOCHS + 1): #1 ~ 200까지 (200회 반복)
     b.assign_sub(d_b * 0.05)
     
     if epoch % 20 == 0: #20번 마다 #epoch = 반복횟수 #mse : 평균제곱오차 #a계수 #b상수항
-        print(f"EPOCH {epoch} - MSE : {mse:.4f} --- a : {a:.4f} --- b : {b:.4f}")
+        print(f"EPOCH {epoch} - MSE : {mse:.4f} --- a : {a.numpy():.4f} --- b : {b.numpy():.4f}")
