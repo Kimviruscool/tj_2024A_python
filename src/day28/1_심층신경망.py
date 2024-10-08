@@ -126,3 +126,43 @@ model.fit(x_train, y_train, epochs = 10, validation_data = (x_test,y_test))
 '''
 
 #평가
+test_loss , test_acc = model.evaluate(x_test, y_test)
+print('정확도 :', test_acc) # 1에 가까울 수록 좋은 성능 #백분율
+
+#예측
+predictions = model.predict(x_test)
+print(predictions[0])
+
+#가장 높은 확률 만 추출
+import numpy as np
+
+# 0번 index에 대한 예측 클래스 출력
+print(np.argmax(predictions[0])) #7
+
+# 첫 10개 index에 대한 예측 클래스 출력 #np.argmax(,axis=차원수)
+print(np.argmax(predictions[:10],axis=1)) #[7 2 1 0 4 1 4 9 5 9]
+
+#예측 값 정답 10개 확인
+print(y_test[:10]) #[7 2 1 0 4 1 4 9 5 9]
+
+#시각화
+
+#함수 생성
+def get_one_result(idx) :
+    img, y_true, y_pred, confidence = x_test[idx], y_test[idx], np.argmax(predictions[idx]), 100*np.max(predictions[idx])
+    return img, y_true, y_pred, confidence
+
+#canvas 생성
+fig, axes = plt.subplots(3, 5)
+fig.set_size_inches(12,10)
+for i in range(15) :
+    ax = axes[i//5, i%5]
+    img, y_true, y_pred, confidence = get_one_result(i)
+    #imshow 이미지 시각화
+    ax.imshow(img, cmap='gray')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_title(f'True : {y_true}')
+    ax.set_xlabel(f'Rediction:{y_pred}\nCnfidence:({confidence:.2f})%')
+plt.tight_layout()
+plt.show()
