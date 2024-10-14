@@ -67,7 +67,7 @@ history = model.fit(x_train_in,y_train,validation_data=(x_valid_in,y_valid),epoc
 ########################################################################
 import cv2
 
-img = cv2.imread('tee.jpg')
+img = cv2.imread('shoze.png')
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 print(img)
 
@@ -87,3 +87,7 @@ print(tf.argmax(result[0]).numpy())
 #티 예측
 #나올값: 0
 #나온값: 8
+
+#신발 예측
+#나올값 7
+#나온값 : 5
