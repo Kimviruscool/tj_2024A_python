@@ -150,13 +150,13 @@ transpose = tf.image.transpose(image)
 plot_augmentation(image,transpose)
 
 # 이미지 자르기1
-cropl = tf.image.central_crop(image,central_fraction=0.6)
-plot_augmentation(image,cropl)
+crop1 = tf.image.central_crop(image,central_fraction=0.6)
+plot_augmentation(image,crop1)
 
 # 이미지 자르기2
 img = tf.image.resize_with_crop_or_pad(image,64+20,64+20) #사이즈 키우기
 crop2 = tf.image.random_crop(img, size=[64,64,3])
-plot_augmentation(image.crop2)
+plot_augmentation(image,crop2)
 
 #이미지 밝기
 brightness = tf.image.adjust_brightness(image,delta=0.3)
