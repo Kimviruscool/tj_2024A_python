@@ -113,9 +113,28 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy',
 
 # 모델 훈련
 history = model.fit(train_data, validation_data=valid_data, epochs=5)
+import matplotlib.pyplot as plt
+
+def plot_loss_acc(history, epoch):
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+    #
+    fig , axes =plt.subplots(1,2)
+
+    axes[0].plot(range(1,epoch+1),loss)
+    axes[0].plot(range(1,epoch+1),val_loss)
+    axes[0].set_tittle('loss')
+
+    axes[1].plot(range(1,epoch+1),acc)
+    axes[1].plot(range(1,epoch+1),val_acc)
+    axes[1].set_tittle('accuracy')
+
+    plt.show()
 
 # 손실함수 정확도 그래프 그리기
-# plot_loss_acc(history,50)
+plot_loss_acc(history,3)
 
 ### 데이터 증강
 image_batch, label_batch = next(iter(train_data.take(1)))
