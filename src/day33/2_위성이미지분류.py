@@ -125,11 +125,11 @@ def plot_loss_acc(history, epoch):
 
     axes[0].plot(range(1,epoch+1),loss)
     axes[0].plot(range(1,epoch+1),val_loss)
-    axes[0].set_tittle('loss')
+    axes[0].set_title('loss')
 
     axes[1].plot(range(1,epoch+1),acc)
     axes[1].plot(range(1,epoch+1),val_acc)
-    axes[1].set_tittle('accuracy')
+    axes[1].set_title('accuracy')
 
     plt.show()
 
