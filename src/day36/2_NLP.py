@@ -37,8 +37,8 @@ print(new_word_encoding)
 # [[2, 1, 5, 4]]
 
 #단어 사전 개수 설정
-#새로운 단어 처리방법 # 최대 개수 외 단어들은 <OOV> 표현한다.
-tokenizer = Tokenizer(num_words=3,oov_token="<OOV>")
+#새로운 단어 처리방법 # 최대 개수 외 단어들은 <OOV> 표현한다. #num_words = (n-1)개
+tokenizer = Tokenizer(num_words=5,oov_token="<OOV>")
 tokenizer.fit_on_texts(sentences)
 word_index = tokenizer.word_index
 
