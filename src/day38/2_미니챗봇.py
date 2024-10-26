@@ -1,5 +1,4 @@
 #2_미니챗봇.py
-from cgi import maxlen
 
 import numpy as np
 import pandas as pd
