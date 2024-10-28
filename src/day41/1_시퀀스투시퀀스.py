@@ -28,7 +28,7 @@ pairs = [] # 답변 리스트
 # for value in 리스트/튜플 :
 print(zip(corpus['Q'],corpus['A']))
 
-for i , (text, pair) in enumerate(zip(corpus['Q'],corpus['A'])) :
+for i , (text, pair) in enumerate(zip(corpus['Q'],corpus['A'])) : #enumerate : 내장함수 #인덱스와 값을 동시에 접근하면서 반복문을 실행하려고할 때
     texts.append(text)
     pairs.append(pair)
     if i >= 1000 : #RAM문제로 1000개만
@@ -37,22 +37,27 @@ for i , (text, pair) in enumerate(zip(corpus['Q'],corpus['A'])) :
 # print(list(zip(texts,pairs))[1995:2000])
 
 import re
-def clean_sentence(sentence):
+def clean_sentence(sentence): #한글 , 숫자를 제외한 문자는 제거
     # 한글 , 숫자를 제외한 모든 문자는 제거
     # 1. re.sub(r'정규표현식', r'대체할문자' , 문자열 ) : 파이썬 내장용 문자열 정규표현식 함수
     # 2. pd['열이름'].str.replace("정규표현식","" , regex=True ) : 데이터프레임내 정규표현식 방법
     sentence = re.sub(r'[^0-9ㄱ-ㅎㅏ-ㅣ가-힣\t]'," ",sentence)
     return sentence
 
-print(clean_sentence("안녕하세요~:)"))
-print(clean_sentence("텐서플로!@#!$@!$"))
+print(clean_sentence("안녕하세요~:)")) #안녕하세요
+print(clean_sentence("텐서플로!@#!$@!$")) #텐서플로
 
+#한글 형태소 분석
 from konlpy.tag import Okt
-okt = Okt()
+okt = Okt() # 형태소 분석 객체 생성
+
 def process_morph(sentence):
-    return ' '.join(okt.morphs(sentence))
+    return ' '.join(okt.morphs(sentence)) # 형태소 분석 결과 목록 을 하나의 문자열 합치기
+    # 형태소들 사이에 공백' ' 으로 구성한 문자열
+print( '안녕하세요'.join(['유재석' , '강호동'] ) ) # '유재석안녕하세요강호동'
 
 #한글 문장 전처리
+# - 전처리 실행후 질문전체 , 답변시작 , 답변끝 구분
 def clean_and_morph(sentence, is_question=True): # 매개변수명=초기값 : 매개변수에 초기값 넣기
     #한글 문장 전처리
     sentence = clean_sentence(sentence)
@@ -78,19 +83,19 @@ def preprocess(texts,pairs):
 
     #답변에 대한 처리
     for pair in pairs :
-    #전처리와 morph 수행
+    #전처리와 morph 수행 #처리하기 쉬운형태로 변경
         in_,out_ = clean_and_morph(pair,is_question=False)# , is_question= False 답변
-        answer_in.append(in_)
-        answer_out.append(out_)
+        answer_in.append(in_) #답변시작 추가
+        answer_out.append(out_) #답변종료 추가
     return questions, answer_in, answer_out # 질문전체리스트,답변시작,답변끝
 
-# 전체 문자을 하나의 리스트로 만들기 #
+# 전체 문자를 하나의 리스트로 만들기 #
 questions,answer_in,answer_out = preprocess(texts,pairs)
-print(questions[:2])
+print(questions[:2]) 
 print(answer_in[:2])
 print(answer_out[:2])
 
-#전체 문장을 하나의 리스트로 만드릭
+#전체 문장을 하나의 리스트로 만들기
 all_sentences = questions + answer_in + answer_out
 
 #라이브러리 불러오기
@@ -311,22 +316,25 @@ def convert_index_to_text(indexs,end_token):
         # 전체 반복문이 종료
     return  sentence #생성된 문장(변수) 반환
 
+# ckpt --> .weights.h5 # 가중치 저장 (ckpt : 옛날거)
+BUFFER_SIZE = 1000 #버퍼 : 훈련 중에 저장할 (무작위) 샘플 최대수
+# 버퍼가 클수록 다양하게 잘 섞여서 학습에 성능 향상 하는데, 메모리 소모가 크다. # 조절 
+BATCH_SIZE = 16 #배치 : 모델이 훈련 중에 훈련 1번에 있어서 사용할 사용되는 샘플 수 
+# 배치가 클수록 안정적이지만, 메모리 소모가 크다 #8,16,32 단위로 주로 사용된다. # 조절
+EMBEDDING_DIM = 100 #임베딩 차원 : 단어를 벡터로 인코딩 과정, 인코딩 과정에 있어서 한 단어가 사용할 차원수
+# 벡터로 표현할 차원수가 크면 표현 성능이 좋아지지만 # 메모리 소모 와 계산비용이(계산속도) 증가한다. #단어들간의 의미 관계를 파악할수 있다.
+TIME_STEPS = MAX_LENGTH #단어의 최대길이 #문장내 단어의 최대 개수 #30(임의)
+START_TOKEN = tokenizer.word_index['<START>'] #문장의 시작을 알리는 토큰(단어) 인덱스 # 단어 생성시(예측) 시작 위치
+END_TOKEN = tokenizer.word_index['<END>'] #문장의 끝을 알리는 토큰(단어) 인덱스 # 단어 생성시(예측) 해당 토큰을 만나면 문장 생성(예측) 종료
 
-BUFFER_SIZE = 1000
-BATCH_SIZE = 16
-EMBEDDING_DIM = 100
-TIME_STEPS = MAX_LENGTH
-START_TOKEN = tokenizer.word_index['<START>']
-END_TOKEN = tokenizer.word_index['<END>']
-
-UNITS = 128
+UNITS = 128 #유닛 수 : RNN(유닛),CNN(노드) => 뉴런 수
 
 VOCAB_SIZE = len(tokenizer.word_index) +1
 DATA_LENGTH = len(questions)
 SAMPLE_SIZE = 3
 NUM_EPOCHS = 20
 
-checkpoint_path = 'model/seq2seq-chatbot-checkpoint.ckpt'
+checkpoint_path = 'model/seq2seq-chatbot-checkpoint.weights.h5'
 checkpoint = ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,monitor='loss',verbose=1)
 
 #seq2seq
