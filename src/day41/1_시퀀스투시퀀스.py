@@ -316,7 +316,7 @@ def convert_index_to_text(indexs,end_token):
         # 전체 반복문이 종료
     return  sentence #생성된 문장(변수) 반환
 
-# ckpt --> .weights.h5 # 가중치 저장 (ckpt : 옛날거)
+#모댈 객체 생성 하기전에 파라미터 값 추가
 BUFFER_SIZE = 1000 #버퍼 : 훈련 중에 저장할 (무작위) 샘플 최대수
 # 버퍼가 클수록 다양하게 잘 섞여서 학습에 성능 향상 하는데, 메모리 소모가 크다. # 조절 
 BATCH_SIZE = 16 #배치 : 모델이 훈련 중에 훈련 1번에 있어서 사용할 사용되는 샘플 수 
@@ -327,40 +327,62 @@ TIME_STEPS = MAX_LENGTH #단어의 최대길이 #문장내 단어의 최대 개�
 START_TOKEN = tokenizer.word_index['<START>'] #문장의 시작을 알리는 토큰(단어) 인덱스 # 단어 생성시(예측) 시작 위치
 END_TOKEN = tokenizer.word_index['<END>'] #문장의 끝을 알리는 토큰(단어) 인덱스 # 단어 생성시(예측) 해당 토큰을 만나면 문장 생성(예측) 종료
 
-UNITS = 128 #유닛 수 : RNN(유닛),CNN(노드) => 뉴런 수
+UNITS = 128 #유닛 수 : RNN(유닛),CNN(노드) => 뉴런 수 # 각 모델이 학습하는 레이어에 사용될 뉴런 수
+# 많은 유닛 수를 사용하면 더 복잡한 학습이 가능하지만, 과대적합에 빠질 수 있다, 주로 32,64,128 단위로 사용된다.
+VOCAB_SIZE = len(tokenizer.word_index) +1 #미리만든 단어사전의 단어수 +1 (+1 : <OOV> 때문에 추가)
+NUM_EPOCHS = 20 # 훈련 횟수
 
-VOCAB_SIZE = len(tokenizer.word_index) +1
-DATA_LENGTH = len(questions)
-SAMPLE_SIZE = 3
-NUM_EPOCHS = 20
+DATA_LENGTH = len(questions) #질문의 총 개수
+SAMPLE_SIZE = 3 # 샘플 개수
 
-checkpoint_path = 'model/seq2seq-chatbot-checkpoint.weights.h5'
-checkpoint = ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,monitor='loss',verbose=1)
+#모델의 가중치를 저장하고 추후에 가중치를 재 호출하여 다른 모델 또는 곳 에서 재 사용
+# ckpt --> .weights.h5 # 가중치 저장 (ckpt : 옛날거)
+checkpoint_path = 'model/seq2seq-chatbot-checkpoint.weights.h5' #경로/파일명.weight.h5 (모델 가중치 저장) # model 이라는 폴더 생성
+from tensorflow.keras.callbacks import ModelCheckpoint #체크포인트 클래스 모듈 가져오기(호출)
+checkpoint = ModelCheckpoint(filepath=checkpoint_path, #모델 가중치를 저장할 파일 경로 지정
+                             save_weights_only=True, # 모델의 가중치만 저장 #True 모델의 구조는 저장되지 않는다. #False : 구조 저장 , True : 가중치만 저장
+                             save_best_only=True, # 훈련중 모니터 (fit:var_loss) 값이 개선될때 만 가중치를 저장 #성능이 향상될 때 체크포인트 업데이트
+                             monitor='loss', # 어떤 값을 모니터링 할지 지정 # loss(손실함수) 손실함수가 발생시?
+                             verbose=1) # 과정로그 수준 # 생략가능
 
 #seq2seq
-seq2seq = Seq2Seq(UNITS,VOCAB_SIZE,EMBEDDING_DIM,TIME_STEPS,START_TOKEN,END_TOKEN)
-seq2seq.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['acc'])
 
-def make_prediction(model,question_inputs):
-    results = model(inputs=question_inputs, training=False)
-    results = np.asarray(results).reshape(-1)
+#시퀀스 모델 객체 생성
+seq2seq = Seq2Seq(UNITS,VOCAB_SIZE,EMBEDDING_DIM,TIME_STEPS,START_TOKEN,END_TOKEN)
+#모델 컴파일
+seq2seq.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
+
+#모델 학습 후 예측 함수
+def make_prediction(model,question_inputs): # model : 학습한 모델 , question_inputs : 예측할 새로운 질문
+    results = model(inputs=question_inputs, training=False) #예측이므로 훈련이 아니다. #Seq2Seq클래스내 call함수내 else 코드들이 실행된다.
+    results = np.asarray(results).reshape(-1) # 변환된 인덱스를 문장으로 변환
+    # 예측된 결과를 np(넘파이) 배열로 변환 하고 차원을 1차원(-1) 배열로 변경한다. #나중에 문장 조회시 평탄화(1차원변경)하고 convert_indext_to_text() 에게 전달할 예정
     return results
 
-for epoch in range(NUM_EPOCHS) :
-    print(f'processing epoch : {epoch * 10 + 1}...')
-    seq2seq.fit([question_padded,answer_in_padded],
-                    answer_out_one_hot,
-                    epochs= 10,
+for epoch in range(NUM_EPOCHS) : #총 20회 반복하기
+    print(f'processing epoch : {epoch * 10 + 1}...') #현재 에포크 진행률 
+    seq2seq.fit([question_padded,answer_in_padded], #모델 피팅
+                    answer_out_one_hot,#원핫 인코딩
+                    epochs= 10, #10회 > 총200회
                     batch_size=BATCH_SIZE,
                     callbacks=[checkpoint]
+                #fit() : 모델 훈련 함수
+                #1. [question_padded,answer_in_padded] : 입력 데이터
+                #2. answer_out_one_hot : 결과 데이터
+                #3. callbacks : 훈련중 체크포인트를 지정한다. #가중치만저장
                 )
-    samples = np.random.randint(DATA_LENGTH,size=SAMPLE_SIZE)
+    # 훈련후 샘플 수 만큼 난수의 질문을 이용하여 성능 예측하기
+    samples = np.random.randint(DATA_LENGTH,size=SAMPLE_SIZE) #전체 질문에서 3개의 질문을 난수로 추출
 
-    for idx in samples:
-        question_inputs = question_padded[idx]
+    #예측 성능 테스트
+    for idx in samples: # 임의의 3개의 질문이 있는 리스트
+        question_inputs = question_padded[idx] #선정된 질문의 인코딩된 단어를 가져오기
+        # 예측 #np.expand_dims(배열,0) : 새로운 차원 추가 # 0 : 첫번째 자리에 차원추가
+        #(1, 단어의 패딩 값) : 2차원 배열 만든다. # 모델의 예측 매개변수가 2차원이라서 차원 맞추기 (응답차원=0,입력차워)
         results = make_prediction(seq2seq, np.expand_dims(question_inputs,0))
+        #예측한 벡터(숫자)들을 문장으로 변환
         results = convert_index_to_text(results,END_TOKEN)
-
+        #확인
         print(f'Q : {questions[idx]}')
         print(f'A : {results}\n')
         print()
