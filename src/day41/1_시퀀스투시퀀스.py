@@ -31,7 +31,7 @@ print(zip(corpus['Q'],corpus['A']))
 for i , (text, pair) in enumerate(zip(corpus['Q'],corpus['A'])) : #enumerate : 내장함수 #인덱스와 값을 동시에 접근하면서 반복문을 실행하려고할 때
     texts.append(text)
     pairs.append(pair)
-    if i >= 1000 : #RAM문제로 1000개만
+    if i >= 500 : #RAM문제로 1000개만
         break
 
 # print(list(zip(texts,pairs))[1995:2000])
@@ -317,6 +317,7 @@ def convert_index_to_text(indexs,end_token):
     return  sentence #생성된 문장(변수) 반환
 
 #모댈 객체 생성 하기전에 파라미터 값 추가
+
 BUFFER_SIZE = 1000 #버퍼 : 훈련 중에 저장할 (무작위) 샘플 최대수
 # 버퍼가 클수록 다양하게 잘 섞여서 학습에 성능 향상 하는데, 메모리 소모가 크다. # 조절 
 BATCH_SIZE = 16 #배치 : 모델이 훈련 중에 훈련 1번에 있어서 사용할 사용되는 샘플 수 
@@ -387,22 +388,23 @@ for epoch in range(NUM_EPOCHS) : #총 20회 반복하기
         print(f'A : {results}\n')
         print()
 
-def make_question(sentence) :
-    sentence = clean_and_morph(sentence)
-    question_sequence = tokenizer.texts_to_sequences([sentence])
+def make_question(sentence) : #새로운 질문을 입력받아 전처리 함수
+    sentence = clean_and_morph(sentence) # 형태소 분석 함수 실행
+    question_sequence = tokenizer.texts_to_sequences([sentence]) #벡터(숫자) 화
     question_padded = pad_sequences(question_sequence,maxlen=MAX_LENGTH,truncating='post',padding='post')
     return question_padded
+#확인
 make_question("오늘 날씨 어때?")
 
 #챗봇 함수
-def run_chatbot(question):
-    question_inputs = make_question(question)
-    results = make_prediction(seq2seq,question_inputs)
-    results = convert_index_to_text(results,END_TOKEN)
+def run_chatbot(question): 
+    question_inputs = make_question(question) #질문 입력 #make_question 함수를 호출하여 질문을 전처리한다.
+    results = make_prediction(seq2seq,question_inputs) # make_prediction() 함수에 학습된 모델과 전처리된 질문을 대입하여 응답을 받는다
+    results = convert_index_to_text(results,END_TOKEN) # convet_index_to_text() 함수를 이용한 예측 응답 결과를 문장으로 변환 한다
     return results
 
 #챗봇실행
-while True:
+while True: #반복문 실행하여 챗봇 활성화
     user_input = input("<<말을 걸어 보세요! \n")
     if user_input == 'q':
         break
